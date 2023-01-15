@@ -13,7 +13,7 @@ router.register(r'users', UserViewSet, basename='users')
 urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
-    path('plate/get/<id>', plate_get),
+    path('plate/get/<uuid:id>/', plate_get),
     path('plate/add/', plate_add),
     path('plate/generate/<int:amount>/', plates_generate),
     path('plate/generate/', plates_generate),
