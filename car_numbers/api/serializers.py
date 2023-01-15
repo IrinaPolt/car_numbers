@@ -7,8 +7,6 @@ from plates.models import Plate
 
 User = get_user_model()
 
-PLATE_FORMAT = r'^[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}(?P<reg>\d{2,3})$' # можно вывести регион и сортировать по регионам в дальнейшем
-
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -28,10 +26,10 @@ class PlateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Plate
-        fields = ('number', )
+        fields = ('plate', )
     
     def validate(self, data):
-        number = data['number']
+        number = data['plate']
         number = gosnomer.normalize(number)
 
         """
@@ -40,5 +38,5 @@ class PlateSerializer(serializers.ModelSerializer):
         В случае ввода недопустимого значения выбрасывается ValueError.
         """
 
-        data['number'] = number
+        data['plate'] = number
         return data

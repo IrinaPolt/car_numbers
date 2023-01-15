@@ -5,10 +5,12 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .serializers import UserSerializer, PlateSerializer, PLATE_FORMAT
+from .serializers import UserSerializer, PlateSerializer
 from plates.models import Plate
 
 User = get_user_model()
+
+PLATE_FORMAT = r'^[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}(?P<reg>\d{2,3})$' # можно вывести регион и сортировать по регионам в дальнейшем
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -17,9 +19,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['GET'])
-def plates_list(request):
-    plates = Plate.objects.all()
-    serializer = PlateSerializer(plates, many=True)
+def plate_get(request, id):
+    plate = Plate.objects.get(id=id)
+    serializer = PlateSerializer(plate)
     return Response(serializer.data)
 
 
@@ -38,7 +40,7 @@ def plates_generate(request, amount = None): # дефолтное значени
         number = exrex.getone(PLATE_FORMAT) # генератор номера по образцу regex
         created = Plate.objects.create(number=number)
         serializer = PlateSerializer(created)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         objs = []
         for i in range(amount):
@@ -46,4 +48,4 @@ def plates_generate(request, amount = None): # дефолтное значени
             created = Plate.objects.create(number=number)
             objs.append(created)
         serializer = PlateSerializer(objs, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

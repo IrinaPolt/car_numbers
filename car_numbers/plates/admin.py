@@ -5,5 +5,5 @@ from .models import Plate
 
 @admin.register(Plate)
 class PlateAdmin(admin.ModelAdmin):
-    list_display = ('id', 'number')
-    search_fields = ('number', )
+    list_display = ('id', 'plate')
+    search_fields = ('plate', )
